@@ -39,6 +39,17 @@ public class AccountService {
     }
 
     private String normalizeDocument(String documentNumber) {
-       //todo()
+        if (documentNumber == null || documentNumber.isBlank()) {
+            throw new IllegalArgumentException("Document cannot be null or empty");
+        }
+
+        String stripped = documentNumber.replaceAll("[.\\-/]", "");
+
+        if (!stripped.matches("\\d+")) {
+            throw new IllegalArgumentException(
+                    "Document number must contain only digits. Formatting characters (. - /) are accepted but other characters are not.");
+        }
+
+        return stripped;
     }
 }

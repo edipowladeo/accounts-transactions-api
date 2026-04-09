@@ -1,5 +1,6 @@
-package com.edipo.ledger.dto;
+package com.edipo.ledger.api.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 
 public class CreateAccountRequest {

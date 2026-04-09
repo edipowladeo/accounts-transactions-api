@@ -1,7 +1,8 @@
-package com.edipo.ledger.dto;
+package com.edipo.ledger.api.request;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 public class CreateTransactionRequest {
@@ -14,6 +15,7 @@ public class CreateTransactionRequest {
 
     @NotNull
     @DecimalMin(value = "0.01")
+    @Positive
     private BigDecimal amount;
 
     public Long getAccountId() {

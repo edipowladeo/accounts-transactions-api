@@ -1,4 +1,4 @@
-package com.edipo.ledger.dto;
+package com.edipo.ledger.api.response;
 
 public class AccountResponse {
 

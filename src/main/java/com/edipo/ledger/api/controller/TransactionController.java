@@ -1,7 +1,8 @@
-package com.edipo.ledger.controller;
+package com.edipo.ledger.api.controller;
 
-import com.edipo.ledger.dto.CreateTransactionRequest;
-import com.edipo.ledger.dto.TransactionResponse;
+import com.edipo.ledger.api.request.CreateTransactionRequest;
+import com.edipo.ledger.api.response.TransactionResponse;
+import com.edipo.ledger.application.CreateTransactionCommand;
 import com.edipo.ledger.service.TransactionService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,13 @@ public class TransactionController {
     public ResponseEntity<TransactionResponse> createTransaction(
             @Valid @RequestBody CreateTransactionRequest request
     ) {
-        TransactionResponse response = transactionService.createTransaction(request);
+        var command = new CreateTransactionCommand(
+                request.getAccountId(),
+                request.getOperationTypeId(),
+                request.getAmount()
+        );
+
+        TransactionResponse response = transactionService.createTransaction(command);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

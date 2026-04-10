@@ -30,6 +30,6 @@ public enum OperationType {
                 return value;
             }
         }
-        throw new InvalidOperationTypeException("Invalid operation type id: " + id);
+        throw new InvalidOperationTypeException(id);
     }
 }

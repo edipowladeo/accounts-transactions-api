@@ -1,5 +1,6 @@
 package com.edipo.ledger.application;
 
+import com.edipo.ledger.api.response.TransactionResponse;
 import com.edipo.ledger.domain.repository.AccountRepository;
 import com.edipo.ledger.domain.exception.AccountNotFoundException;
 import com.edipo.ledger.domain.exception.InvalidAmountException;
@@ -45,14 +46,39 @@ public class TransactionService {
                 OffsetDateTime.now()
         );
 
-        return transactionRepository.save(transaction);
+        Transaction savedTransaction =  transactionRepository.save(transaction);
+
+        return savedTransaction;
+       /* return new TransactionResponse(
+                savedTransaction.getId(),
+                savedTransaction.getAccountId(),
+                savedTransaction.getOperationType().getId(),
+                savedTransaction.getAmount(),
+                savedTransaction.getEventDate()
+        )*/
     }
 
     private void validateCommand(CreateTransactionCommand command) {
-   //todo
+        if (command.getAccountId() == null || command.getAccountId() <= 0) {
+            throw new IllegalArgumentException("Account id must be a positive number");
+        }
+
+        if (command.getAmount() == null) {
+            throw new InvalidAmountException("Amount must not be null");
+        }
+
+        if (command.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new InvalidAmountException("Amount must be greater than zero");
+        }
     }
 
     private BigDecimal normalizeAmount(BigDecimal originalAmount, OperationType operationType) {
-   //todo
+        BigDecimal absoluteAmount = originalAmount.abs();
+
+        if (operationType.isDebt()) {
+            return absoluteAmount.negate();
+        }
+
+        return absoluteAmount;
     }
 }

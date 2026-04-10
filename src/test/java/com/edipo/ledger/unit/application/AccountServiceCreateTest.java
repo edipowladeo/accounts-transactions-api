@@ -1,6 +1,5 @@
 package com.edipo.ledger.unit.application;
 
-import com.edipo.ledger.api.response.AccountResponse;
 import com.edipo.ledger.application.AccountService;
 import com.edipo.ledger.application.CreateAccountCommand;
 import com.edipo.ledger.domain.exception.DuplicateDocumentException;
@@ -10,13 +9,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
-class CreateAccountServiceTest {
+class AccountServiceCreateTest {
 
     private AccountRepository accountRepository;
     private AccountService accountService;

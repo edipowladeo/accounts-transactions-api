@@ -1,5 +1,8 @@
 package com.edipo.ledger.api.response;
 
+import com.edipo.ledger.domain.model.Account;
+import com.edipo.ledger.domain.model.Transaction;
+
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
@@ -26,6 +29,20 @@ public class TransactionResponse {
         this.operationTypeId = operationTypeId;
         this.amount = amount;
         this.eventDate = eventDate;
+    }
+
+    public static TransactionResponse from(Transaction transaction) {
+        if (transaction == null) {
+            return null;
+        }
+
+        return new TransactionResponse(
+                transaction.getId(),
+                transaction.getAccountId(), //todo check nullability
+                transaction.getOperationType().getId(),
+                transaction.getAmount(),
+                transaction.getEventDate()
+        );
     }
 
     public Long getTransactionId() {

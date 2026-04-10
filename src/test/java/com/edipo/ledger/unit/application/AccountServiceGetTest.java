@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-class GetAccountServiceTest {
+class AccountServiceGetTest {
 
     private AccountRepository accountRepository;
     private AccountService accountService;

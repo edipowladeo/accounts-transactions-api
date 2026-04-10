@@ -17,7 +17,7 @@ public class AccountService {
     }
 
     @Transactional
-    public Account create(CreateAccountCommand command) {
+    public Account createAccount(CreateAccountCommand command) {
         String normalizedDocument = normalizeDocument(command.getDocumentNumber());
 
         if (accountRepository.existsByDocumentNumber(normalizedDocument)) {

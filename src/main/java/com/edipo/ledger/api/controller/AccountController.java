@@ -4,6 +4,7 @@ import com.edipo.ledger.application.AccountService;
 import com.edipo.ledger.api.request.CreateAccountRequest;
 import com.edipo.ledger.api.response.AccountResponse;
 import com.edipo.ledger.application.CreateAccountCommand;
+import com.edipo.ledger.domain.model.Account;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +28,10 @@ public class AccountController {
                 request.getDocumentNumber()
         );
 
-        AccountResponse response = accountService.createAccount(command);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        Account account = accountService.createAccount(command);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(AccountResponse.from(account));
         //201 Created when inserted
         //todo 200 ok account already exists with equivalent data
         //todo 409 Conflict when the account exists but the request conflicts with existing data
@@ -38,7 +41,7 @@ public class AccountController {
     public ResponseEntity<AccountResponse> getAccountById(
             @PathVariable Long accountId
     ) {
-        AccountResponse response = accountService.getAccountById(accountId);
-        return ResponseEntity.ok(response);
+        Account account = accountService.getById(accountId);
+        return ResponseEntity.ok(AccountResponse.from(account));
     }
 }

@@ -1,6 +1,6 @@
 package com.edipo.ledger.unit.application;
 
-import com.edipo.ledger.application.AccountService;
+import com.edipo.ledger.application.service.AccountService;
 import com.edipo.ledger.domain.exception.AccountNotFoundException;
 import com.edipo.ledger.domain.model.Account;
 import com.edipo.ledger.domain.repository.AccountRepository;
@@ -27,8 +27,8 @@ class AccountServiceGetTest {
     }
 
     @Test
-    @DisplayName("should return account when account exists")
-    void shouldReturnAccountWhenAccountExists() {
+    @DisplayName("when account exists, then returns account")
+    void whenAccountExists_thenReturnsAccount() {
         // given
         long accountId = 1L;
         Account account = new Account(accountId, "12345678900");
@@ -48,8 +48,8 @@ class AccountServiceGetTest {
     }
 
     @Test
-    @DisplayName("should throw exception when account does not exist")
-    void shouldThrowExceptionWhenAccountDoesNotExist() {
+    @DisplayName("when account does not exist, then throws exception")
+    void whenAccountDoesNotExist_thenThrowsException() {
         // given
         long accountId = 999L;
 

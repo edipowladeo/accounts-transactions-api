@@ -1,5 +1,6 @@
-package com.edipo.ledger.application;
+package com.edipo.ledger.application.service;
 
+import com.edipo.ledger.application.CreateAccountCommand;
 import com.edipo.ledger.domain.model.Account;
 import com.edipo.ledger.domain.exception.AccountNotFoundException;
 import com.edipo.ledger.domain.repository.AccountRepository;
@@ -49,6 +50,10 @@ public class AccountService {
             throw new IllegalArgumentException(
                     "Document number must contain only digits. Formatting characters (. - /) are accepted but other characters are not.");
         }
+        if (stripped.isBlank()) {
+            throw new IllegalArgumentException("Document cannot be null or empty");
+        }
+
 
         return stripped;
     }

@@ -12,8 +12,4 @@ public class CreateAccountRequest {
     public String getDocumentNumber() {
         return documentNumber;
     }
-
-    public void setDocumentNumber(String documentNumber) {
-        this.documentNumber = documentNumber;
-    }
 }

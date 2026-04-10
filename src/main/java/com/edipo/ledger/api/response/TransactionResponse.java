@@ -2,16 +2,21 @@ package com.edipo.ledger.api.response;
 
 import com.edipo.ledger.domain.model.Account;
 import com.edipo.ledger.domain.model.Transaction;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 public class TransactionResponse {
 
+    @JsonProperty("transaction_id")
     private Long transactionId;
+    @JsonProperty("account_id")
     private Long accountId;
+    @JsonProperty("operation_type_id")
     private Integer operationTypeId;
     private BigDecimal amount;
+    @JsonProperty("event_date")
     private OffsetDateTime eventDate;
 
     public TransactionResponse() {

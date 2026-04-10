@@ -1,5 +1,6 @@
 package com.edipo.ledger.api.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -8,9 +9,11 @@ import java.math.BigDecimal;
 public class CreateTransactionRequest {
 
     @NotNull
+    @JsonProperty("account_id")
     private Long accountId;
 
     @NotNull
+    @JsonProperty("operation_type_id")
     private Integer operationTypeId;
 
     @NotNull
@@ -22,23 +25,11 @@ public class CreateTransactionRequest {
         return accountId;
     }
 
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
-    }
-
     public Integer getOperationTypeId() {
         return operationTypeId;
     }
 
-    public void setOperationTypeId(Integer operationTypeId) {
-        this.operationTypeId = operationTypeId;
-    }
-
     public BigDecimal getAmount() {
         return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
     }
 }

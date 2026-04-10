@@ -1,7 +1,7 @@
 package com.edipo.ledger.unit.application;
 
 import com.edipo.ledger.application.CreateTransactionCommand;
-import com.edipo.ledger.application.TransactionService;
+import com.edipo.ledger.application.service.TransactionService;
 import com.edipo.ledger.domain.exception.AccountNotFoundException;
 import com.edipo.ledger.domain.exception.InvalidAmountException;
 import com.edipo.ledger.domain.exception.InvalidOperationTypeException;
@@ -38,8 +38,8 @@ class TransactionServiceTest {
     }
 
     @Test
-    @DisplayName("should create transaction with positive amount for credit operation")
-    void shouldCreateTransactionWithPositiveAmountForCreditOperation() {
+    @DisplayName("when operation is credit and amount is positive, then creates transaction with positive amount")
+    void whenOperationIsCreditAndAmountIsPositive_thenCreatesTransactionWithPositiveAmount() {
         Long accountId = 1L;
         Integer operationTypeId = OperationType.PAYMENT.getId();
         BigDecimal inputAmount = new BigDecimal("100.50");
@@ -81,8 +81,8 @@ class TransactionServiceTest {
     }
 
     @Test
-    @DisplayName("should create transaction with negative amount for debt operation")
-    void shouldCreateTransactionWithNegativeAmountForDebtOperation() {
+    @DisplayName("when operation is debt and amount is positive, then creates transaction with negative amount")
+    void whenOperationIsDebtAndAmountIsPositive_thenCreatesTransactionWithNegativeAmount() {
         Long accountId = 1L;
         Integer operationTypeId = OperationType.PURCHASE.getId();
         BigDecimal inputAmount = new BigDecimal("200.00");
@@ -124,8 +124,8 @@ class TransactionServiceTest {
     }
 
     @Test
-    @DisplayName("should throw when account id is null")
-    void shouldThrowWhenAccountIdIsNull() {
+    @DisplayName("when account id is null, then throws exception")
+    void whenAccountIdIsNull_thenThrowsException() {
         CreateTransactionCommand command =
                 new CreateTransactionCommand(null, OperationType.PAYMENT.getId(), new BigDecimal("10.00"));
 
@@ -139,8 +139,8 @@ class TransactionServiceTest {
     }
 
     @Test
-    @DisplayName("should throw when account id is zero")
-    void shouldThrowWhenAccountIdIsZero() {
+    @DisplayName("when account id is zero, then throws exception")
+    void whenAccountIdIsZero_thenThrowsException() {
         CreateTransactionCommand command =
                 new CreateTransactionCommand(0L, OperationType.PAYMENT.getId(), new BigDecimal("10.00"));
 
@@ -154,8 +154,8 @@ class TransactionServiceTest {
     }
 
     @Test
-    @DisplayName("should throw when account id is negative")
-    void shouldThrowWhenAccountIdIsNegative() {
+    @DisplayName("when account id is negative, then throws exception")
+    void whenAccountIdIsNegative_thenThrowsException() {
         CreateTransactionCommand command =
                 new CreateTransactionCommand(-1L, OperationType.PAYMENT.getId(), new BigDecimal("10.00"));
 
@@ -169,8 +169,8 @@ class TransactionServiceTest {
     }
 
     @Test
-    @DisplayName("should throw when amount is null")
-    void shouldThrowWhenAmountIsNull() {
+    @DisplayName("when amount is null, then throws exception")
+    void whenAmountIsNull_thenThrowsException() {
         CreateTransactionCommand command =
                 new CreateTransactionCommand(1L, OperationType.PAYMENT.getId(), null);
 
@@ -184,8 +184,8 @@ class TransactionServiceTest {
     }
 
     @Test
-    @DisplayName("should throw when amount is zero")
-    void shouldThrowWhenAmountIsZero() {
+    @DisplayName("when amount is zero, then throws exception")
+    void whenAmountIsZero_thenThrowsException() {
         CreateTransactionCommand command =
                 new CreateTransactionCommand(1L, OperationType.PAYMENT.getId(), BigDecimal.ZERO);
 
@@ -199,8 +199,8 @@ class TransactionServiceTest {
     }
 
     @Test
-    @DisplayName("should throw when account does not exist")
-    void shouldThrowWhenAccountDoesNotExist() {
+    @DisplayName("when account does not exist, then throws exception")
+    void whenAccountDoesNotExist_thenThrowsException() {
         Long accountId = 99L;
 
         CreateTransactionCommand command =
@@ -219,8 +219,8 @@ class TransactionServiceTest {
     }
 
     @Test
-    @DisplayName("should throw when operation type id is invalid")
-    void shouldThrowWhenOperationTypeIdIsInvalid() {
+    @DisplayName("when operation type id is invalid, then throws exception")
+    void whenOperationTypeIdIsInvalid_thenThrowsException() {
         Long accountId = 1L;
         Integer invalidOperationTypeId = 999;
 
@@ -240,8 +240,8 @@ class TransactionServiceTest {
 
     @ParameterizedTest
     @EnumSource(OperationType.class)
-    @DisplayName("should throw when amount is negative for any operation type")
-    void shouldThrowWhenAmountIsNegativeForAnyOperationType(OperationType operationType) {
+    @DisplayName("when amount is negative for any operation type, then throws exception")
+    void whenAmountIsNegativeForAnyOperationType_thenThrowsException(OperationType operationType) {
         CreateTransactionCommand command =
                 new CreateTransactionCommand(1L, operationType.getId(), new BigDecimal("-100.00"));
 

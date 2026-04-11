@@ -75,9 +75,9 @@ class TransactionControllerIT {
                 ArgumentCaptor.forClass(CreateTransactionCommand.class);
         verify(transactionService).create(captor.capture());
         CreateTransactionCommand captured = captor.getValue();
-        assertEquals(1L, captured.getAccountId());
-        assertEquals(4, captured.getOperationTypeId());
-        assertEquals(0, captured.getAmount().compareTo(new BigDecimal("123.45")));
+        assertEquals(1L, captured.accountId());
+        assertEquals(4, captured.operationTypeId());
+        assertEquals(0, captured.amount().compareTo(new BigDecimal("123.45")));
     }
 
     @Test

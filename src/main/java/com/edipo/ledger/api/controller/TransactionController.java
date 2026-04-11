@@ -1,5 +1,6 @@
 package com.edipo.ledger.api.controller;
 
+import com.edipo.ledger.api.ApiExamples;
 import com.edipo.ledger.api.request.CreateTransactionRequest;
 import com.edipo.ledger.api.response.ApiErrorResponse;
 import com.edipo.ledger.api.response.TransactionResponse;
@@ -7,16 +8,19 @@ import com.edipo.ledger.application.CreateTransactionCommand;
 import com.edipo.ledger.application.service.TransactionService;
 import com.edipo.ledger.domain.model.Transaction;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/transactions")
@@ -32,7 +36,7 @@ public class TransactionController {
     @Operation(
             summary = "Create a transaction",
             description = "Creates a new transaction for an existing account. " +
-                    "The transaction amount is normalized according to the operation type rules."
+                    "The transaction amount is normalised according to the operation type rules."
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -40,7 +44,11 @@ public class TransactionController {
                     description = "Transaction created successfully",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = TransactionResponse.class)
+                            schema = @Schema(implementation = TransactionResponse.class),
+                            examples = @ExampleObject(
+                                    name = "Created transaction",
+                                    value = ApiExamples.TRANSACTION_RESPONSE
+                            )
                     )
             ),
             @ApiResponse(
@@ -50,7 +58,11 @@ public class TransactionController {
                             "malformed JSON, or empty body)",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorResponse.class)
+                            schema = @Schema(implementation = ApiErrorResponse.class),
+                            examples = @ExampleObject(
+                                    name = "Validation error",
+                                    value = ApiExamples.ERROR_INVALID_REQUEST
+                            )
                     )
             ),
             @ApiResponse(
@@ -58,7 +70,11 @@ public class TransactionController {
                     description = "Account not found for the given account_id",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorResponse.class)
+                            schema = @Schema(implementation = ApiErrorResponse.class),
+                            examples = @ExampleObject(
+                                    name = "Account not found",
+                                    value = ApiExamples.ERROR_ACCOUNT_NOT_FOUND
+                            )
                     )
             ),
             @ApiResponse(
@@ -76,7 +92,25 @@ public class TransactionController {
                     description = "Transaction creation payload",
                     required = true,
                     content = @Content(
-                            schema = @Schema(implementation = CreateTransactionRequest.class)
+                            schema = @Schema(implementation = CreateTransactionRequest.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Payment transaction",
+                                            value = ApiExamples.CREATE_TRANSACTION_REQUEST
+                                    ),
+                                    @ExampleObject(
+                                            name = "Null account_id (400)",
+                                            value = ApiExamples.CREATE_TRANSACTION_REQUEST_NULL_ACCOUNT
+                                    ),
+                                    @ExampleObject(
+                                            name = "Null operation_type_id (400)",
+                                            value = ApiExamples.CREATE_TRANSACTION_REQUEST_NULL_OPERATION
+                                    ),
+                                    @ExampleObject(
+                                            name = "Negative amount (400)",
+                                            value = ApiExamples.CREATE_TRANSACTION_REQUEST_NEGATIVE_AMOUNT
+                                    )
+                            }
                     )
             )
             @Valid @org.springframework.web.bind.annotation.RequestBody CreateTransactionRequest request

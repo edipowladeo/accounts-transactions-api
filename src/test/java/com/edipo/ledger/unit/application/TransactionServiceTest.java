@@ -62,20 +62,20 @@ class TransactionServiceTest {
         Transaction result = transactionService.create(command);
 
         assertNotNull(result);
-        assertEquals(10L, result.getId());
-        assertEquals(accountId, result.getAccountId());
-        assertEquals(OperationType.PAYMENT, result.getOperationType());
-        assertEquals(new BigDecimal("100.50"), result.getAmount());
+        assertEquals(10L, result.id());
+        assertEquals(accountId, result.accountId());
+        assertEquals(OperationType.PAYMENT, result.operationType());
+        assertEquals(new BigDecimal("100.50"), result.amount());
 
         ArgumentCaptor<Transaction> captor = ArgumentCaptor.forClass(Transaction.class);
         verify(transactionRepository).save(captor.capture());
 
         Transaction persisted = captor.getValue();
-        assertNull(persisted.getId());
-        assertEquals(accountId, persisted.getAccountId());
-        assertEquals(OperationType.PAYMENT, persisted.getOperationType());
-        assertEquals(new BigDecimal("100.50"), persisted.getAmount());
-        assertNotNull(persisted.getEventDate());
+        assertNull(persisted.id());
+        assertEquals(accountId, persisted.accountId());
+        assertEquals(OperationType.PAYMENT, persisted.operationType());
+        assertEquals(new BigDecimal("100.50"), persisted.amount());
+        assertNotNull(persisted.eventDate());
 
         verify(accountRepository).findById(accountId);
     }
@@ -105,20 +105,20 @@ class TransactionServiceTest {
         Transaction result = transactionService.create(command);
 
         assertNotNull(result);
-        assertEquals(11L, result.getId());
-        assertEquals(accountId, result.getAccountId());
-        assertEquals(OperationType.PURCHASE, result.getOperationType());
-        assertEquals(new BigDecimal("-200.00"), result.getAmount());
+        assertEquals(11L, result.id());
+        assertEquals(accountId, result.accountId());
+        assertEquals(OperationType.PURCHASE, result.operationType());
+        assertEquals(new BigDecimal("-200.00"), result.amount());
 
         ArgumentCaptor<Transaction> captor = ArgumentCaptor.forClass(Transaction.class);
         verify(transactionRepository).save(captor.capture());
 
         Transaction persisted = captor.getValue();
-        assertNull(persisted.getId());
-        assertEquals(accountId, persisted.getAccountId());
-        assertEquals(OperationType.PURCHASE, persisted.getOperationType());
-        assertEquals(new BigDecimal("-200.00"), persisted.getAmount());
-        assertNotNull(persisted.getEventDate());
+        assertNull(persisted.id());
+        assertEquals(accountId, persisted.accountId());
+        assertEquals(OperationType.PURCHASE, persisted.operationType());
+        assertEquals(new BigDecimal("-200.00"), persisted.amount());
+        assertNotNull(persisted.eventDate());
 
         verify(accountRepository).findById(accountId);
     }

@@ -46,13 +46,13 @@ class AccountServiceTest {
 
         // then
         assertNotNull(result);
-        assertEquals(1L, result.getId());
-        assertEquals(documentNumber, result.getDocumentNumber());
+        assertEquals(1L, result.id());
+        assertEquals(documentNumber, result.documentNumber());
 
         verify(accountRepository).existsByDocumentNumber(documentNumber);
         verify(accountRepository).save(argThat(account ->
-                account.getId() == null &&
-                documentNumber.equals(account.getDocumentNumber())
+                account.id() == null &&
+                documentNumber.equals(account.documentNumber())
         ));
     }
 
@@ -96,8 +96,8 @@ class AccountServiceTest {
 
         // then
         assertNotNull(result);
-        assertEquals(accountId, result.getId());
-        assertEquals("12345678900", result.getDocumentNumber());
+        assertEquals(accountId, result.id());
+        assertEquals("12345678900", result.documentNumber());
 
         verify(accountRepository).findById(accountId);
     }

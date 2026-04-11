@@ -41,7 +41,7 @@ class AccountControllerIT {
         Account createdAccount = new Account(1L, "12345678900");
 
         when(accountService.createAccount(argThat(command ->
-                "12345678900".equals(command.getDocumentNumber())
+                "12345678900".equals(command.documentNumber())
         ))).thenReturn(createdAccount);
 
         mockMvc.perform(post("/accounts")
@@ -100,7 +100,7 @@ class AccountControllerIT {
             """;
 
         when(accountService.createAccount(argThat(command ->
-                "12345678900".equals(command.getDocumentNumber())
+                "12345678900".equals(command.documentNumber())
         ))).thenThrow(new DuplicateDocumentException("12345678900"));
 
         mockMvc.perform(post("/accounts")

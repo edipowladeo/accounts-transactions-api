@@ -1,5 +1,6 @@
 package com.edipo.ledger.api.controller;
 
+import com.edipo.ledger.api.ApiExamples;
 import com.edipo.ledger.api.response.ApiErrorResponse;
 import com.edipo.ledger.application.service.AccountService;
 import com.edipo.ledger.api.request.CreateAccountRequest;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -44,12 +46,7 @@ public class AccountController {
                             schema = @Schema(implementation = AccountResponse.class),
                             examples = @ExampleObject(
                                     name = "Created account",
-                                    value = """
-                                            {
-                                              "account_id": 1,
-                                              "document_number": "12345678900"
-                                            }
-                                            """
+                                    value = ApiExamples.ACCOUNT_RESPONSE
                             )
                     )
             ),
@@ -62,24 +59,8 @@ public class AccountController {
                             examples = {
                                     @ExampleObject(
                                             name = "Blank document_number",
-                                            value = """
-                                                    {
-                                                      "message": "document_number: must not be blank",
-                                                      "code": "INVALID_REQUEST",
-                                                      "timestamp": "2024-01-15T10:30:00Z"
-                                                    }
-                                                    """
+                                            value = ApiExamples.INVALID_REQUEST_BLANK_DOCUMENT
                                     ),
-                                    @ExampleObject(
-                                            name = "Missing document_number",
-                                            value = """
-                                                    {
-                                                      "message": "document_number: must not be blank",
-                                                      "code": "INVALID_REQUEST",
-                                                      "timestamp": "2024-01-15T10:30:00Z"
-                                                    }
-                                                    """
-                                    )
                             }
                     )
             ),
@@ -91,20 +72,25 @@ public class AccountController {
                             schema = @Schema(implementation = ApiErrorResponse.class),
                             examples = @ExampleObject(
                                     name = "Duplicate document number",
-                                    value = """
-                                            {
-                                              "message": "Account already exists for document number: 12345678900",
-                                              "code": "DUPLICATE_DOCUMENT",
-                                              "timestamp": "2024-01-15T10:30:00Z"
-                                            }
-                                            """
+                                    value = ApiExamples.DUPLICATE_DOCUMENT
                             )
                     )
             )
     })
     @PostMapping
     public ResponseEntity<AccountResponse> createAccount(
-            @Valid @RequestBody CreateAccountRequest request
+            @RequestBody(
+                    description = "Account creation payload",
+                    required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = CreateAccountRequest.class),
+                            examples = @ExampleObject(
+                                    name = "Create account",
+                                    value = ApiExamples.CREATE_ACCOUNT_REQUEST
+                            )
+                    )
+            )
+            @Valid @org.springframework.web.bind.annotation.RequestBody CreateAccountRequest request
     ) {
         var command = new CreateAccountCommand(request.getDocumentNumber());
         Account account = accountService.createAccount(command);
@@ -125,12 +111,7 @@ public class AccountController {
                             schema = @Schema(implementation = AccountResponse.class),
                             examples = @ExampleObject(
                                     name = "Found account",
-                                    value = """
-                                            {
-                                              "account_id": 1,
-                                              "document_number": "12345678900"
-                                            }
-                                            """
+                                    value = ApiExamples.ACCOUNT_RESPONSE
                             )
                     )
             ),
@@ -142,13 +123,7 @@ public class AccountController {
                             schema = @Schema(implementation = ApiErrorResponse.class),
                             examples = @ExampleObject(
                                     name = "Invalid accountId",
-                                    value = """
-                                            {
-                                              "message": "Invalid value 'abc' for parameter 'accountId'",
-                                              "code": "INVALID_PARAMETER",
-                                              "timestamp": "2024-01-15T10:30:00Z"
-                                            }
-                                            """
+                                    value = ApiExamples.INVALID_PARAMETER_ACCOUNT_ID
                             )
                     )
             ),
@@ -160,13 +135,7 @@ public class AccountController {
                             schema = @Schema(implementation = ApiErrorResponse.class),
                             examples = @ExampleObject(
                                     name = "Account not found",
-                                    value = """
-                                            {
-                                              "message": "Account not found for id: 99",
-                                              "code": "ACCOUNT_NOT_FOUND",
-                                              "timestamp": "2024-01-15T10:30:00Z"
-                                            }
-                                            """
+                                    value = ApiExamples.ACCOUNT_NOT_FOUND
                             )
                     )
             )

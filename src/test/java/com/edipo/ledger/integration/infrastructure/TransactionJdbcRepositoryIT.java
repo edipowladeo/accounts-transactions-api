@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
@@ -53,11 +52,11 @@ class TransactionJdbcRepositoryIT {
         Transaction saved = transactionJdbcRepository.save(transaction);
 
         assertNotNull(saved);
-        assertNotNull(saved.getId());
-        assertEquals(accountId, saved.getAccountId());
-        assertEquals(OperationType.PAYMENT, saved.getOperationType());
-        assertEquals(new BigDecimal("150.75"), saved.getAmount());
-        assertNotNull(saved.getEventDate());
+        assertNotNull(saved.id());
+        assertEquals(accountId, saved.accountId());
+        assertEquals(OperationType.PAYMENT, saved.operationType());
+        assertEquals(new BigDecimal("150.75"), saved.amount());
+        assertNotNull(saved.eventDate());
     }
 
     @Test
@@ -79,13 +78,13 @@ class TransactionJdbcRepositoryIT {
         BigDecimal persistedAmount = jdbcTemplate.queryForObject(
                 "select amount from transactions where transaction_id = ?",
                 BigDecimal.class,
-                saved.getId()
+                saved.id()
         );
 
         Integer persistedOperationTypeId = jdbcTemplate.queryForObject(
                 "select operation_type_id from transactions where transaction_id = ?",
                 Integer.class,
-                saved.getId()
+                saved.id()
         );
 
         assertEquals(new BigDecimal("-50.00"), persistedAmount);
@@ -113,7 +112,7 @@ class TransactionJdbcRepositoryIT {
         OffsetDateTime persistedTimestamp = jdbcTemplate.queryForObject(
                 "select event_date from transactions where transaction_id = ?",
                 (rs, rowNum) -> rs.getObject(1, OffsetDateTime.class),
-                saved.getId()
+                saved.id()
         );
 
         assertNotNull(persistedTimestamp);
@@ -138,7 +137,7 @@ class TransactionJdbcRepositoryIT {
         Integer operationTypeId = jdbcTemplate.queryForObject(
                 "select operation_type_id from transactions where transaction_id = ?",
                 Integer.class,
-                saved.getId()
+                saved.id()
         );
 
         assertEquals(OperationType.INSTALLMENT_PURCHASE.getId(), operationTypeId);

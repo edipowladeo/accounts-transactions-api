@@ -40,8 +40,8 @@ class AccountJdbcRepositoryIT {
         Account saved = accountJdbcRepository.save(account);
 
         assertNotNull(saved);
-        assertNotNull(saved.getId());
-        assertEquals("12345678900", saved.getDocumentNumber());
+        assertNotNull(saved.id());
+        assertEquals("12345678900", saved.documentNumber());
     }
 
     @Test
@@ -61,8 +61,8 @@ class AccountJdbcRepositoryIT {
         Optional<Account> result = accountJdbcRepository.findById(accountId);
 
         assertTrue(result.isPresent());
-        assertEquals(accountId, result.get().getId());
-        assertEquals("11122233344", result.get().getDocumentNumber());
+        assertEquals(accountId, result.get().id());
+        assertEquals("11122233344", result.get().documentNumber());
     }
 
     @Test

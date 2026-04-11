@@ -43,7 +43,7 @@ public class AccountService {
             throw new IllegalArgumentException("Document cannot be null or empty");
         }
 
-        String stripped = documentNumber.replaceAll("[.\\-/]", "").replaceAll("^0+", "");
+        String stripped = documentNumber.replaceAll("[.\\-/]", "");
 
         if (!stripped.matches("\\d+")) {
             throw new IllegalArgumentException(

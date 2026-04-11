@@ -6,6 +6,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 @Repository
 public class TransactionJdbcRepository implements TransactionRepository {
@@ -17,7 +19,9 @@ public class TransactionJdbcRepository implements TransactionRepository {
     }
 
     @Override
+    @Transactional
     public Transaction save(Transaction transaction) {
+
         String sql = """
                 INSERT INTO transactions (
                     account_id,
@@ -44,10 +48,12 @@ public class TransactionJdbcRepository implements TransactionRepository {
         jdbcTemplate.update(sql, params, keyHolder, new String[]{"transaction_id"});
 
         Number key = keyHolder.getKey();
-        Long generatedId = key != null ? key.longValue() : null;
+        if (key == null) {
+            throw new IllegalStateException("Failed to retrieve generated transaction ID after insert");
+        }
 
         return new Transaction(
-                generatedId,
+                key.longValue(),
                 transaction.accountId(),
                 transaction.operationType(),
                 transaction.amount(),

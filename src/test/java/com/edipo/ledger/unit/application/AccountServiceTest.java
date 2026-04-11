@@ -28,9 +28,8 @@ class AccountServiceTest {
     }
 
     @Test
-    @DisplayName("when document number does not exist, then creates account")
-    void whenDocumentNumberDoesNotExist_thenCreatesAccount() {
-        // given
+    @DisplayName("Should create account when document number does not exist")
+    void shouldCreateAccount_whenDocumentNumberDoesNotExist() {
         String documentNumber = "12345678900";
         CreateAccountCommand command = new CreateAccountCommand(documentNumber);
 
@@ -41,10 +40,8 @@ class AccountServiceTest {
         when(accountRepository.save(any(Account.class)))
                 .thenReturn(savedAccount);
 
-        // when
         Account result = accountService.createAccount(command);
 
-        // then
         assertNotNull(result);
         assertEquals(1L, result.id());
         assertEquals(documentNumber, result.documentNumber());
@@ -57,16 +54,14 @@ class AccountServiceTest {
     }
 
     @Test
-    @DisplayName("when document number already exists, then throws exception")
-    void whenDocumentNumberAlreadyExists_thenThrowsException() {
-        // given
+    @DisplayName("Should throw exception when document number already exists")
+    void shouldThrowException_whenDocumentNumberAlreadyExists() {
         String documentNumber = "12345678900";
         CreateAccountCommand command = new CreateAccountCommand(documentNumber);
 
         when(accountRepository.existsByDocumentNumber(documentNumber))
                 .thenReturn(true);
 
-        // when / then
         DuplicateDocumentException exception = assertThrows(
                 DuplicateDocumentException.class,
                 () -> accountService.createAccount(command)
@@ -82,19 +77,16 @@ class AccountServiceTest {
     }
 
     @Test
-    @DisplayName("when account exists, then returns account")
-    void whenAccountExists_thenReturnsAccount() {
-        // given
+    @DisplayName("Should return account when account exists")
+    void shouldReturnAccount_whenAccountExists() {
         long accountId = 1L;
         Account account = new Account(accountId, "12345678900");
 
         when(accountRepository.findById(accountId))
                 .thenReturn(Optional.of(account));
 
-        // when
         Account result = accountService.getById(accountId);
 
-        // then
         assertNotNull(result);
         assertEquals(accountId, result.id());
         assertEquals("12345678900", result.documentNumber());
@@ -103,15 +95,13 @@ class AccountServiceTest {
     }
 
     @Test
-    @DisplayName("when account does not exist, then throws exception")
-    void whenAccountDoesNotExist_thenThrowsException() {
-        // given
+    @DisplayName("Should throw exception when account does not exist")
+    void shouldThrowException_whenAccountDoesNotExist() {
         long accountId = 999L;
 
         when(accountRepository.findById(accountId))
                 .thenReturn(Optional.empty());
 
-        // when / then
         AccountNotFoundException exception = assertThrows(
                 AccountNotFoundException.class,
                 () -> accountService.getById(accountId)

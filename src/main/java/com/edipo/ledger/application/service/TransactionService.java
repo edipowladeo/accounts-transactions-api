@@ -63,6 +63,10 @@ public class TransactionService {
         if (command.amount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new InvalidAmountException("Amount must be greater than zero");
         }
+
+        if (command.amount().scale() > 2) {
+            throw new InvalidAmountException("Amount must not have more than 2 decimal places");
+        }
     }
 
     private BigDecimal normalizeAmount(BigDecimal originalAmount, OperationType operationType) {

@@ -54,8 +54,8 @@ public class TransactionController {
             @ApiResponse(
                     responseCode = "400",
                     description = "Invalid request payload — one or more fields failed validation " +
-                            "(e.g. null account_id, null operation_type_id, null/zero/negative amount, " +
-                            "malformed JSON, or empty body)",
+                            "(null or invalid account_id, operation_type_id, or amount — " +
+                            "amount must be positive with up to 2 decimal places, e.g. 12.12)",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorResponse.class),

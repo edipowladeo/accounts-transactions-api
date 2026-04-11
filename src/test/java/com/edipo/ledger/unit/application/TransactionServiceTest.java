@@ -199,6 +199,21 @@ class TransactionServiceTest {
     }
 
     @Test
+    @DisplayName("should throw exception when amount scale is greater than 2")
+    void shouldThrowExceptionWhenAmountScaleIsGreaterThanTwo() {
+        CreateTransactionCommand command =
+                new CreateTransactionCommand(1L, OperationType.PAYMENT.getId(),  new BigDecimal("10.001"));
+
+        InvalidAmountException exception = assertThrows(
+                InvalidAmountException.class,
+                () -> transactionService.create(command)
+        );
+
+        assertEquals("Amount must not have more than 2 decimal places", exception.getMessage());
+        verifyNoInteractions(accountRepository, transactionRepository);
+    }
+
+    @Test
     @DisplayName("should throw exception when account does not exist")
     void shouldThrowExceptionWhenAccountDoesNotExist() {
         Long accountId = 99L;

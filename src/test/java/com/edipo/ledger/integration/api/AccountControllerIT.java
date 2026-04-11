@@ -120,7 +120,7 @@ class AccountControllerIT {
 
         when(accountService.getById(1L)).thenReturn(account);
 
-        mockMvc.perform(get("/accounts/1"))
+        mockMvc.perform(get("/accounts?accountId=1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.account_id").value(1))
@@ -133,7 +133,7 @@ class AccountControllerIT {
         when(accountService.getById(99L))
                 .thenThrow(new AccountNotFoundException(99L));
 
-        mockMvc.perform(get("/accounts/99"))
+        mockMvc.perform(get("/accounts?accountId=99"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message").value("Account not found for id: 99"))
@@ -144,7 +144,7 @@ class AccountControllerIT {
     @Test
     @DisplayName("should return custom 400 error when account id is invalid")
     void shouldReturnCustom400ErrorWhenAccountIdIsInvalid() throws Exception {
-        mockMvc.perform(get("/accounts/abc"))
+        mockMvc.perform(get("/accounts?accountId=abc"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message").value("Invalid value 'abc' for parameter 'accountId'"))

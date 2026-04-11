@@ -97,18 +97,6 @@ public class TransactionController {
                                     @ExampleObject(
                                             name = "Payment transaction",
                                             value = ApiExamples.CREATE_TRANSACTION_REQUEST
-                                    ),
-                                    @ExampleObject(
-                                            name = "Null account_id (400)",
-                                            value = ApiExamples.CREATE_TRANSACTION_REQUEST_NULL_ACCOUNT
-                                    ),
-                                    @ExampleObject(
-                                            name = "Null operation_type_id (400)",
-                                            value = ApiExamples.CREATE_TRANSACTION_REQUEST_NULL_OPERATION
-                                    ),
-                                    @ExampleObject(
-                                            name = "Negative amount (400)",
-                                            value = ApiExamples.CREATE_TRANSACTION_REQUEST_NEGATIVE_AMOUNT
                                     )
                             }
                     )

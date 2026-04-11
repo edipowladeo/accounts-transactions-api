@@ -81,7 +81,7 @@ class LedgerE2ETest {
                 "99999999900"
         );
 
-        mockMvc.perform(get("/accounts/100"))
+        mockMvc.perform(get("/accounts?accountId=100"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.account_id").value(100))

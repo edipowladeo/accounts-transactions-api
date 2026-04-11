@@ -58,33 +58,6 @@ public final class ApiExamples {
             }
             """;
 
-    public static final String CREATE_TRANSACTION_REQUEST_NULL_ACCOUNT =
-            """
-            {
-              "account_id": null,
-              "operation_type_id": 4,
-              "amount": 123.45
-            }
-            """;
-
-    public static final String CREATE_TRANSACTION_REQUEST_NULL_OPERATION =
-            """
-            {
-              "account_id": 1,
-              "operation_type_id": null,
-              "amount": 123.45
-            }
-            """;
-
-    public static final String CREATE_TRANSACTION_REQUEST_NEGATIVE_AMOUNT =
-            """
-            {
-              "account_id": 1,
-              "operation_type_id": 4,
-              "amount": -10.00
-            }
-            """;
-
     public static final String TRANSACTION_RESPONSE =
             """
             {

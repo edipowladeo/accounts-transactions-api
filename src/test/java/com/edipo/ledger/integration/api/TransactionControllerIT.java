@@ -2,7 +2,7 @@ package com.edipo.ledger.integration.api;
 
 import com.edipo.ledger.api.controller.TransactionController;
 import com.edipo.ledger.application.CreateTransactionCommand;
-import com.edipo.ledger.application.service.TransactionService;
+import com.edipo.ledger.application.TransactionService;
 import com.edipo.ledger.domain.exception.AccountNotFoundException;
 import com.edipo.ledger.domain.model.OperationType;
 import com.edipo.ledger.domain.model.Transaction;

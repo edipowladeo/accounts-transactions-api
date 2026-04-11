@@ -1,7 +1,7 @@
 package com.edipo.ledger.unit.application;
 
 import com.edipo.ledger.application.CreateTransactionCommand;
-import com.edipo.ledger.application.service.TransactionService;
+import com.edipo.ledger.application.TransactionService;
 import com.edipo.ledger.domain.exception.AccountNotFoundException;
 import com.edipo.ledger.domain.exception.InvalidAmountException;
 import com.edipo.ledger.domain.exception.InvalidOperationTypeException;

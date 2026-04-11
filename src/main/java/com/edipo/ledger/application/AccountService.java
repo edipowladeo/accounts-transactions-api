@@ -1,6 +1,5 @@
-package com.edipo.ledger.application.service;
+package com.edipo.ledger.application;
 
-import com.edipo.ledger.application.CreateAccountCommand;
 import com.edipo.ledger.domain.model.Account;
 import com.edipo.ledger.domain.exception.AccountNotFoundException;
 import com.edipo.ledger.domain.repository.AccountRepository;

@@ -5,7 +5,7 @@ import com.edipo.ledger.api.request.CreateTransactionRequest;
 import com.edipo.ledger.api.response.ApiErrorResponse;
 import com.edipo.ledger.api.response.TransactionResponse;
 import com.edipo.ledger.application.CreateTransactionCommand;
-import com.edipo.ledger.application.service.TransactionService;
+import com.edipo.ledger.application.TransactionService;
 import com.edipo.ledger.domain.model.Transaction;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

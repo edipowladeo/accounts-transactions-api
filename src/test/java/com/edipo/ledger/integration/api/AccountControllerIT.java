@@ -1,7 +1,7 @@
 package com.edipo.ledger.integration.api;
 
 import com.edipo.ledger.api.controller.AccountController;
-import com.edipo.ledger.application.service.AccountService;
+import com.edipo.ledger.application.AccountService;
 import com.edipo.ledger.domain.exception.AccountNotFoundException;
 import com.edipo.ledger.domain.exception.DuplicateDocumentException;
 import com.edipo.ledger.domain.model.Account;

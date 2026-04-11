@@ -9,6 +9,8 @@ import com.edipo.ledger.domain.repository.AccountRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Optional;
 
@@ -109,5 +111,64 @@ class AccountServiceTest {
 
         assertEquals("Account not found for id: 999", exception.getMessage());
         verify(accountRepository).findById(accountId);
+    }
+
+    @ParameterizedTest(name = "''{0}'' should normalize to ''{1}'' and save successfully")
+    @DisplayName("Should normalize document number before saving")
+    @CsvSource({
+            // Leading zeros only
+            "002456,              2456",
+            "012345678900,        12345678900",
+            "00012345678900,      12345678900",
+            // Special characters only
+            "123.456.789-00,      12345678900",
+            "12.345.678/0001-90,  12345678000190",
+            // Both special characters and leading zeros
+            "012.345.678-90,      1234567890",
+            "012.345.678/0001-90, 12345678000190",
+            // Already clean
+            "12345678900,         12345678900",
+    })
+    void shouldNormalizeDocumentNumber_whenCreatingAccount(String input, String normalized) {
+        CreateAccountCommand command = new CreateAccountCommand(input);
+
+        when(accountRepository.existsByDocumentNumber(normalized.trim())).thenReturn(false);
+        when(accountRepository.save(any(Account.class))).thenReturn(new Account(1L, normalized.trim()));
+
+        Account result = accountService.createAccount(command);
+
+        assertEquals(normalized.trim(), result.documentNumber());
+        verify(accountRepository).existsByDocumentNumber(normalized.trim());
+        verify(accountRepository).save(argThat(account ->
+                normalized.trim().equals(account.documentNumber())
+        ));
+    }
+
+    @ParameterizedTest(name = "''{0}'' should normalize to ''{1}'' and throw duplicate exception")
+    @DisplayName("Should throw duplicate exception when normalized document already exists")
+    @CsvSource({
+            // Leading zeros only
+            "002456,              2456",
+            "012345678900,        12345678900",
+            // Special characters only
+            "123.456.789-00,      12345678900",
+            "12.345.678/0001-90,  12345678000190",
+            // Both
+            "012.345.678-90,      1234567890",
+            "012.345.678/0001-90, 12345678000190",
+    })
+    void shouldThrowDuplicate_whenNormalizedDocumentAlreadyExists(String input, String normalized) {
+        CreateAccountCommand command = new CreateAccountCommand(input);
+
+        when(accountRepository.existsByDocumentNumber(normalized.trim())).thenReturn(true);
+
+        DuplicateDocumentException exception = assertThrows(
+                DuplicateDocumentException.class,
+                () -> accountService.createAccount(command)
+        );
+
+        assertEquals("Account already exists for document number: " + normalized.trim(), exception.getMessage());
+        verify(accountRepository).existsByDocumentNumber(normalized.trim());
+        verify(accountRepository, never()).save(any(Account.class));
     }
 }

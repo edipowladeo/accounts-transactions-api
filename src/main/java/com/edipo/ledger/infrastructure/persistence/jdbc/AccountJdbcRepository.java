@@ -2,9 +2,10 @@ package com.edipo.ledger.infrastructure.persistence.jdbc;
 
 import com.edipo.ledger.domain.model.Account;
 import com.edipo.ledger.domain.repository.AccountRepository;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -32,8 +33,9 @@ public class AccountJdbcRepository implements AccountRepository {
 
         jdbcTemplate.update(sql, params, keyHolder, new String[]{"account_id"});
 
-        Number key = keyHolder.getKey();
-        Long generatedId = key != null ? key.longValue() : null;
+        Long generatedId = Optional.ofNullable(keyHolder.getKey())
+                .map(Number::longValue)
+                .orElseThrow(() -> new IllegalStateException("Failed to retrieve generated account ID"));
 
         return new Account(generatedId, account.documentNumber());
     }
@@ -61,17 +63,19 @@ public class AccountJdbcRepository implements AccountRepository {
     @Override
     public boolean existsByDocumentNumber(String documentNumber) {
         String sql = """
-                SELECT COUNT(1)
-                FROM accounts
-                WHERE document_number = :documentNumber
+                SELECT EXISTS (
+                    SELECT 1
+                    FROM accounts
+                    WHERE document_number = :documentNumber
+                )
                 """;
 
-        Integer count = jdbcTemplate.queryForObject(
+        Boolean exists = jdbcTemplate.queryForObject(
                 sql,
                 new MapSqlParameterSource("documentNumber", documentNumber),
-                Integer.class
+                Boolean.class
         );
 
-        return count != null && count > 0;
+        return exists;
     }
 }

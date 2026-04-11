@@ -53,7 +53,7 @@ public class TransactionResponse {
 
         return new TransactionResponse(
                 transaction.id(),
-                transaction.accountId(), //todo check nullability
+                transaction.accountId(),
                 transaction.operationType().getId(),
                 transaction.amount(),
                 transaction.eventDate()

@@ -4,6 +4,8 @@ services:
     build: .
     ports:
       - "8080:8080"
+    volumes:
+      - h2_data:/data
 
 volumes:
-  postgres_data:
+  h2_data:

@@ -52,11 +52,11 @@ public class TransactionResponse {
         }
 
         return new TransactionResponse(
-                transaction.getId(),
-                transaction.getAccountId(), //todo check nullability
-                transaction.getOperationType().getId(),
-                transaction.getAmount(),
-                transaction.getEventDate()
+                transaction.id(),
+                transaction.accountId(), //todo check nullability
+                transaction.operationType().getId(),
+                transaction.amount(),
+                transaction.eventDate()
         );
     }
 

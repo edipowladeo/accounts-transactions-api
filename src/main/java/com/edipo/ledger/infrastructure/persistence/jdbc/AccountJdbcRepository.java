@@ -26,7 +26,7 @@ public class AccountJdbcRepository implements AccountRepository {
                 """;
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-                .addValue("documentNumber", account.getDocumentNumber());
+                .addValue("documentNumber", account.documentNumber());
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -35,7 +35,7 @@ public class AccountJdbcRepository implements AccountRepository {
         Number key = keyHolder.getKey();
         Long generatedId = key != null ? key.longValue() : null;
 
-        return new Account(generatedId, account.getDocumentNumber());
+        return new Account(generatedId, account.documentNumber());
     }
 
     @Override

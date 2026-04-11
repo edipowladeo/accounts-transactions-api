@@ -31,16 +31,16 @@ public class TransactionService {
     public Transaction create(CreateTransactionCommand command) {
         validateCommand(command);
 
-        if (accountRepository.findById(command.getAccountId()).isEmpty()) {
-            throw new AccountNotFoundException(command.getAccountId());
+        if (accountRepository.findById(command.accountId()).isEmpty()) {
+            throw new AccountNotFoundException(command.accountId());
         }
 
-        OperationType operationType = OperationType.fromId(command.getOperationTypeId());
-        BigDecimal normalizedAmount = normalizeAmount(command.getAmount(), operationType);
+        OperationType operationType = OperationType.fromId(command.operationTypeId());
+        BigDecimal normalizedAmount = normalizeAmount(command.amount(), operationType);
 
         Transaction transaction = new Transaction(
                 null,
-                command.getAccountId(),
+                command.accountId(),
                 operationType,
                 normalizedAmount,
                 OffsetDateTime.now()
@@ -52,15 +52,15 @@ public class TransactionService {
     }
 
     private void validateCommand(CreateTransactionCommand command) {
-        if (command.getAccountId() == null || command.getAccountId() <= 0) {
+        if (command.accountId() == null || command.accountId() <= 0) {
             throw new IllegalArgumentException("Account id must be a positive number");
         }
 
-        if (command.getAmount() == null) {
+        if (command.amount() == null) {
             throw new InvalidAmountException("Amount must not be null");
         }
 
-        if (command.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+        if (command.amount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new InvalidAmountException("Amount must be greater than zero");
         }
     }

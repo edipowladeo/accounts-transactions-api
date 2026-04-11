@@ -34,10 +34,10 @@ public class TransactionJdbcRepository implements TransactionRepository {
                 """;
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-                .addValue("accountId", transaction.getAccountId())
-                .addValue("operationTypeId", transaction.getOperationType().getId())
-                .addValue("amount", transaction.getAmount())
-                .addValue("eventDate", transaction.getEventDate());
+                .addValue("accountId", transaction.accountId())
+                .addValue("operationTypeId", transaction.operationType().getId())
+                .addValue("amount", transaction.amount())
+                .addValue("eventDate", transaction.eventDate());
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -48,10 +48,10 @@ public class TransactionJdbcRepository implements TransactionRepository {
 
         return new Transaction(
                 generatedId,
-                transaction.getAccountId(),
-                transaction.getOperationType(),
-                transaction.getAmount(),
-                transaction.getEventDate()
+                transaction.accountId(),
+                transaction.operationType(),
+                transaction.amount(),
+                transaction.eventDate()
         );
     }
 }

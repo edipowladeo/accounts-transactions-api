@@ -20,7 +20,7 @@ public class AccountResponse {
     }
 
     public static AccountResponse from(Account account) {
-        return new AccountResponse(account.getId(), account.getDocumentNumber());
+        return new AccountResponse(account.id(), account.documentNumber());
     }
 
     public Long getAccountId() {

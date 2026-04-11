@@ -19,7 +19,7 @@ public class AccountService {
 
     @Transactional
     public Account createAccount(CreateAccountCommand command) {
-        String normalizedDocument = normalizeDocument(command.getDocumentNumber());
+        String normalizedDocument = normalizeDocument(command.documentNumber());
 
         if (accountRepository.existsByDocumentNumber(normalizedDocument)) {
             throw new DuplicateDocumentException(normalizedDocument);

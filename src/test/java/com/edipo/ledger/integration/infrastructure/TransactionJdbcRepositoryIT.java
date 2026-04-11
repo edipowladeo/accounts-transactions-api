@@ -110,9 +110,9 @@ class TransactionJdbcRepositoryIT {
 
         Transaction saved = transactionJdbcRepository.save(transaction);
 
-        Timestamp persistedTimestamp = jdbcTemplate.queryForObject(
+        OffsetDateTime persistedTimestamp = jdbcTemplate.queryForObject(
                 "select event_date from transactions where transaction_id = ?",
-                Timestamp.class,
+                (rs, rowNum) -> rs.getObject(1, OffsetDateTime.class),
                 saved.getId()
         );
 

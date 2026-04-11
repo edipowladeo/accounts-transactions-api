@@ -45,9 +45,7 @@ public class TransactionService {
                 OffsetDateTime.now()
         );
 
-        Transaction savedTransaction =  transactionRepository.save(transaction);
-
-        return savedTransaction;
+        return transactionRepository.save(transaction);
     }
 
     private void validateCommand(CreateTransactionCommand command) {

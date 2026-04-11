@@ -2,12 +2,11 @@ package com.edipo.ledger.infrastructure.persistence.jdbc;
 
 import com.edipo.ledger.domain.model.Transaction;
 import com.edipo.ledger.domain.repository.TransactionRepository;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 @Repository
 public class TransactionJdbcRepository implements TransactionRepository {

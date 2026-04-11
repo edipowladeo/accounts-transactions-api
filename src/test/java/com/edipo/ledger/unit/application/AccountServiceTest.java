@@ -2,6 +2,7 @@ package com.edipo.ledger.unit.application;
 
 import com.edipo.ledger.application.service.AccountService;
 import com.edipo.ledger.application.CreateAccountCommand;
+import com.edipo.ledger.domain.exception.AccountNotFoundException;
 import com.edipo.ledger.domain.exception.DuplicateDocumentException;
 import com.edipo.ledger.domain.model.Account;
 import com.edipo.ledger.domain.repository.AccountRepository;
@@ -9,11 +10,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
-class AccountServiceCreateTest {
+class AccountServiceTest {
 
     private AccountRepository accountRepository;
     private AccountService accountService;
@@ -76,5 +79,45 @@ class AccountServiceCreateTest {
 
         verify(accountRepository).existsByDocumentNumber(documentNumber);
         verify(accountRepository, never()).save(any(Account.class));
+    }
+
+    @Test
+    @DisplayName("when account exists, then returns account")
+    void whenAccountExists_thenReturnsAccount() {
+        // given
+        long accountId = 1L;
+        Account account = new Account(accountId, "12345678900");
+
+        when(accountRepository.findById(accountId))
+                .thenReturn(Optional.of(account));
+
+        // when
+        Account result = accountService.getById(accountId);
+
+        // then
+        assertNotNull(result);
+        assertEquals(accountId, result.getId());
+        assertEquals("12345678900", result.getDocumentNumber());
+
+        verify(accountRepository).findById(accountId);
+    }
+
+    @Test
+    @DisplayName("when account does not exist, then throws exception")
+    void whenAccountDoesNotExist_thenThrowsException() {
+        // given
+        long accountId = 999L;
+
+        when(accountRepository.findById(accountId))
+                .thenReturn(Optional.empty());
+
+        // when / then
+        AccountNotFoundException exception = assertThrows(
+                AccountNotFoundException.class,
+                () -> accountService.getById(accountId)
+        );
+
+        assertEquals("Account not found for id: 999", exception.getMessage());
+        verify(accountRepository).findById(accountId);
     }
 }

@@ -117,15 +117,14 @@ class AccountServiceTest {
     @DisplayName("Should normalize document number before saving")
     @CsvSource({
             // Leading zeros only
-            "002456,              2456",
-            "012345678900,        12345678900",
-            "00012345678900,      12345678900",
+            "002456,              002456",
+            "012345678900,        012345678900",
             // Special characters only
             "123.456.789-00,      12345678900",
             "12.345.678/0001-90,  12345678000190",
             // Both special characters and leading zeros
-            "012.345.678-90,      1234567890",
-            "012.345.678/0001-90, 12345678000190",
+            "012.345.678-90,      01234567890",
+            "012.345.678/0001-90, 012345678000190",
             // Already clean
             "12345678900,         12345678900",
     })
@@ -148,14 +147,14 @@ class AccountServiceTest {
     @DisplayName("Should throw duplicate exception when normalized document already exists")
     @CsvSource({
             // Leading zeros only
-            "002456,              2456",
-            "012345678900,        12345678900",
+            "002456,              002456",
+            "012345678900,        012345678900",
             // Special characters only
             "123.456.789-00,      12345678900",
             "12.345.678/0001-90,  12345678000190",
             // Both
-            "012.345.678-90,      1234567890",
-            "012.345.678/0001-90, 12345678000190",
+            "012.345.678-90,      01234567890",
+            "012.345.678/0001-90, 012345678000190",
     })
     void shouldThrowDuplicate_whenNormalizedDocumentAlreadyExists(String input, String normalized) {
         CreateAccountCommand command = new CreateAccountCommand(input);

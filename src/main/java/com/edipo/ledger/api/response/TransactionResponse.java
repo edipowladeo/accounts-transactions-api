@@ -1,23 +1,33 @@
 package com.edipo.ledger.api.response;
 
-import com.edipo.ledger.domain.model.Account;
 import com.edipo.ledger.domain.model.Transaction;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
+@Schema(description = "Transaction response")
 public class TransactionResponse {
 
     @JsonProperty("transaction_id")
+    @Schema(description = "Transaction identifier", example = "10")
     private Long transactionId;
+
     @JsonProperty("account_id")
+    @Schema(description = "Account identifier", example = "1")
     private Long accountId;
+
     @JsonProperty("operation_type_id")
+    @Schema(description = "Operation type identifier", example = "4")
     private Integer operationTypeId;
+
+    @Schema(description = "Transaction amount", example = "-100.50")
     private BigDecimal amount;
-    @JsonProperty("event_date")
-    private OffsetDateTime eventDate;
+
+    @JsonProperty("created_at")
+    @Schema(description = "Transaction event date", example = "2026-04-10T12:30:00Z")
+    private OffsetDateTime createdAt;
 
     public TransactionResponse() {
     }
@@ -33,7 +43,7 @@ public class TransactionResponse {
         this.accountId = accountId;
         this.operationTypeId = operationTypeId;
         this.amount = amount;
-        this.eventDate = eventDate;
+        this.createdAt = eventDate;
     }
 
     public static TransactionResponse from(Transaction transaction) {
@@ -82,11 +92,11 @@ public class TransactionResponse {
         this.amount = amount;
     }
 
-    public OffsetDateTime getEventDate() {
-        return eventDate;
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setEventDate(OffsetDateTime eventDate) {
-        this.eventDate = eventDate;
+    public void setCreatedAt(OffsetDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

@@ -49,13 +49,6 @@ public class TransactionService {
         Transaction savedTransaction =  transactionRepository.save(transaction);
 
         return savedTransaction;
-       /* return new TransactionResponse(
-                savedTransaction.getId(),
-                savedTransaction.getAccountId(),
-                savedTransaction.getOperationType().getId(),
-                savedTransaction.getAmount(),
-                savedTransaction.getEventDate()
-        )*/
     }
 
     private void validateCommand(CreateTransactionCommand command) {

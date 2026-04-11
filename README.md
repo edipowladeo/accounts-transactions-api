@@ -1,11 +1,28 @@
-# Pismo Account & Transactions API
+# Account & Transactions API
 
 REST API for managing customer accounts and financial transactions.
 
 ## Overview
 
-The service allows creating accounts tied to a document number and registering transactions against them. Each transaction has an operation type (purchase, installment purchase, withdrawal, or payment). 
-Debit operations are stored with negative amounts, payments with positive amounts.
+This service allows:
+
+- Creating accounts associated with a document number
+- Registering financial transactions for an account
+
+Each transaction has an operation type:
+
+- PURCHASE
+- INSTALLMENT_PURCHASE
+- WITHDRAWAL
+- PAYMENT
+
+### Business Rules
+
+- Debit operations (purchase, installment, withdrawal) are stored as **negative amounts**
+- Payments are stored as **positive amounts**
+
+---
+
 
 ## Tech Stack
 

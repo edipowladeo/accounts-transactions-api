@@ -49,6 +49,13 @@ public final class ApiExamples {
             }
             """;
 
+    public static final String BALANCE_RESPONSE = """
+            {
+              "account_id": 1,
+              "balance": 23.45
+            }
+            """;
+
     public static final String CREATE_TRANSACTION_REQUEST =
             """
             {

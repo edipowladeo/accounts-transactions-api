@@ -93,7 +93,7 @@ public class TransactionController {
                     required = true,
                     content = @Content(
                             schema = @Schema(implementation = CreateTransactionRequest.class),
-                            examples = {
+                             examples = {
                                     @ExampleObject(
                                             name = "Payment transaction",
                                             value = ApiExamples.CREATE_TRANSACTION_REQUEST

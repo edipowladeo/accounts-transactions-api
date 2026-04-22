@@ -8,6 +8,7 @@ This service allows:
 
 - Creating accounts associated with a document number
 - Registering financial transactions for an account
+- Retrieving account balance by summing all persisted transactions
 
 Each transaction has an operation type:
 
@@ -20,6 +21,7 @@ Each transaction has an operation type:
 
 - Debit operations (purchase, installment, withdrawal) are stored as **negative amounts**
 - Payments are stored as **positive amounts**
+- Account balance is computed as the **sum of all transaction amounts** for an account
 
 ---
 
@@ -86,3 +88,26 @@ Once running, Swagger UI is available at:
 ```
 http://localhost:8080/swagger-ui.html
 ```
+
+## Balance endpoint
+
+### Get account balance
+
+`GET /balance?accountId={id}`
+
+Returns the current balance for the informed account by summing all values from the `transactions` table.
+
+#### Success response (`200`)
+
+```json
+{
+  "account_id": 1,
+  "balance": 23.45
+}
+```
+
+#### Error semantics
+
+- `400 INVALID_PARAMETER` for invalid `accountId` value or type
+- `400 INVALID_REQUEST` when `accountId` query parameter is missing
+- `404 ACCOUNT_NOT_FOUND` when account does not exist

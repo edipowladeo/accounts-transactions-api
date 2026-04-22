@@ -8,6 +8,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+
 @Repository
 public class TransactionJdbcRepository implements TransactionRepository {
 
@@ -58,5 +60,23 @@ public class TransactionJdbcRepository implements TransactionRepository {
                 transaction.amount(),
                 transaction.eventDate()
         );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BigDecimal getBalanceByAccountId(Long accountId) {
+        String sql = """
+                SELECT COALESCE(SUM(amount), 0)
+                FROM transactions
+                WHERE account_id = :accountId
+                """;
+
+        BigDecimal balance = jdbcTemplate.queryForObject(
+                sql,
+                new MapSqlParameterSource("accountId", accountId),
+                BigDecimal.class
+        );
+
+        return balance == null ? BigDecimal.ZERO : balance;
     }
 }

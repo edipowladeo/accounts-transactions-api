@@ -142,6 +142,45 @@ class TransactionJdbcRepositoryIT {
         assertEquals(OperationType.INSTALLMENT_PURCHASE.getId(), operationTypeId);
     }
 
+    @Test
+    @DisplayName("should return aggregated balance for account")
+    void shouldReturnAggregatedBalanceForAccount() {
+        Long accountId = insertAccount("33344455566");
+
+        jdbcTemplate.update(
+                "insert into transactions (account_id, operation_type_id, amount, event_date) values (?, ?, ?, CURRENT_TIMESTAMP)",
+                accountId,
+                OperationType.PURCHASE.getId(),
+                new BigDecimal("-100.00")
+        );
+        jdbcTemplate.update(
+                "insert into transactions (account_id, operation_type_id, amount, event_date) values (?, ?, ?, CURRENT_TIMESTAMP)",
+                accountId,
+                OperationType.PAYMENT.getId(),
+                new BigDecimal("30.50")
+        );
+        jdbcTemplate.update(
+                "insert into transactions (account_id, operation_type_id, amount, event_date) values (?, ?, ?, CURRENT_TIMESTAMP)",
+                accountId,
+                OperationType.PAYMENT.getId(),
+                new BigDecimal("10.00")
+        );
+
+        BigDecimal balance = transactionJdbcRepository.getBalanceByAccountId(accountId);
+
+        assertEquals(0, new BigDecimal("-59.50").compareTo(balance));
+    }
+
+    @Test
+    @DisplayName("should return zero balance when account has no transactions")
+    void shouldReturnZeroBalanceWhenAccountHasNoTransactions() {
+        Long accountId = insertAccount("77788899900");
+
+        BigDecimal balance = transactionJdbcRepository.getBalanceByAccountId(accountId);
+
+        assertEquals(0, BigDecimal.ZERO.compareTo(balance));
+    }
+
     private Long insertAccount(String documentNumber) {
         jdbcTemplate.update(
                 "insert into accounts (document_number) values (?)",

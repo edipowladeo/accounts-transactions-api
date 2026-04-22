@@ -6,12 +6,14 @@ import com.edipo.ledger.domain.exception.AccountNotFoundException;
 import com.edipo.ledger.domain.exception.DuplicateDocumentException;
 import com.edipo.ledger.domain.model.Account;
 import com.edipo.ledger.domain.repository.AccountRepository;
+import com.edipo.ledger.domain.repository.TransactionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,12 +23,14 @@ import static org.mockito.Mockito.*;
 class AccountServiceTest {
 
     private AccountRepository accountRepository;
+    private TransactionRepository transactionRepository;
     private AccountService accountService;
 
     @BeforeEach
     void setUp() {
         accountRepository = mock(AccountRepository.class);
-        accountService = new AccountService(accountRepository);
+        transactionRepository = mock(TransactionRepository.class);
+        accountService = new AccountService(accountRepository, transactionRepository);
     }
 
     @Test
@@ -169,5 +173,38 @@ class AccountServiceTest {
         assertEquals("Account already exists for document number: " + normalized.trim(), exception.getMessage());
         verify(accountRepository).existsByDocumentNumber(normalized.trim());
         verify(accountRepository, never()).save(any(Account.class));
+    }
+
+    @Test
+    @DisplayName("Should return account balance when account exists")
+    void shouldReturnBalance_whenAccountExists() {
+        long accountId = 1L;
+        Account account = new Account(accountId, "12345678900");
+
+        when(accountRepository.findById(accountId)).thenReturn(Optional.of(account));
+        when(transactionRepository.getBalanceByAccountId(accountId)).thenReturn(new BigDecimal("23.45"));
+
+        BigDecimal result = accountService.getBalance(accountId);
+
+        assertEquals(new BigDecimal("23.45"), result);
+        verify(accountRepository).findById(accountId);
+        verify(transactionRepository).getBalanceByAccountId(accountId);
+    }
+
+    @Test
+    @DisplayName("Should throw exception when account does not exist on balance retrieval")
+    void shouldThrowException_whenBalanceAccountDoesNotExist() {
+        long accountId = 999L;
+
+        when(accountRepository.findById(accountId)).thenReturn(Optional.empty());
+
+        AccountNotFoundException exception = assertThrows(
+                AccountNotFoundException.class,
+                () -> accountService.getBalance(accountId)
+        );
+
+        assertEquals("Account not found for id: 999", exception.getMessage());
+        verify(accountRepository).findById(accountId);
+        verifyNoInteractions(transactionRepository);
     }
 }

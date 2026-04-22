@@ -48,7 +48,7 @@ class LedgerE2ETest {
     void shouldCreateAccountEndToEnd() throws Exception {
         String requestBody = """
                 {
-                  "document_number": "12345678900",
+                  "document_number": "12345678900"
                 }
                 """;
 

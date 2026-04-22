@@ -6,6 +6,7 @@ import java.util.Optional;
 
 public interface AccountRepository {
     Account save(Account account);
+    Account update(Account account);
     Optional<Account> findById(Long id);
     boolean existsByDocumentNumber(String documentNumber);
 }

@@ -3,6 +3,7 @@ package com.edipo.ledger.api;
 import com.edipo.ledger.api.response.ApiErrorResponse;
 import com.edipo.ledger.domain.exception.AccountNotFoundException;
 import com.edipo.ledger.domain.exception.DuplicateDocumentException;
+import com.edipo.ledger.domain.exception.InvalidAmountException;
 import com.edipo.ledger.domain.exception.InvalidOperationTypeException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.lang.reflect.Field;
@@ -23,6 +24,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleAccountNotFound(AccountNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ApiErrorResponse("ACCOUNT_NOT_FOUND", ex.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidAmountException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidAmount(InvalidAmountException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ApiErrorResponse("INVALID_AMOUNT", ex.getMessage()));
     }
 
     @ExceptionHandler(InvalidOperationTypeException.class)

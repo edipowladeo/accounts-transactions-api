@@ -1,5 +1,6 @@
 package com.edipo.ledger.integration.api;
 
+import com.edipo.ledger.SecurityConfig;
 import com.edipo.ledger.api.controller.AccountController;
 import com.edipo.ledger.application.AccountService;
 import com.edipo.ledger.domain.exception.AccountNotFoundException;
@@ -8,11 +9,14 @@ import com.edipo.ledger.domain.model.Account;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+
+import java.math.BigDecimal;
 
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.when;
@@ -21,6 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AccountController.class)
+@Import(SecurityConfig.class)
 class AccountControllerIT {
 
     @Autowired
@@ -38,7 +43,7 @@ class AccountControllerIT {
             }
             """;
 
-        Account createdAccount = new Account(1L, "12345678900");
+        Account createdAccount = new Account(1L, "12345678900", BigDecimal.ZERO);
 
         when(accountService.createAccount(argThat(command ->
                 "12345678900".equals(command.documentNumber())
@@ -116,7 +121,7 @@ class AccountControllerIT {
     @Test
     @DisplayName("should return account when account exists")
     void shouldReturnAccountWhenAccountExists() throws Exception {
-        Account account = new Account(1L, "12345678900");
+        Account account = new Account(1L, "12345678900", BigDecimal.ZERO);
 
         when(accountService.getById(1L)).thenReturn(account);
 

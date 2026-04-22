@@ -4,6 +4,7 @@ import com.edipo.ledger.application.AccountService;
 import com.edipo.ledger.application.CreateAccountCommand;
 import com.edipo.ledger.domain.exception.AccountNotFoundException;
 import com.edipo.ledger.domain.exception.DuplicateDocumentException;
+import com.edipo.ledger.domain.exception.InvalidAmountException;
 import com.edipo.ledger.domain.model.Account;
 import com.edipo.ledger.domain.repository.AccountRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,12 +35,12 @@ class AccountServiceTest {
     @DisplayName("Should create account when document number does not exist")
     void shouldCreateAccount_whenDocumentNumberDoesNotExist() {
         String documentNumber = "12345678900";
-        CreateAccountCommand command = new CreateAccountCommand(documentNumber);
+        CreateAccountCommand command = new CreateAccountCommand(documentNumber, BigDecimal.ZERO);
 
         when(accountRepository.existsByDocumentNumber(documentNumber))
                 .thenReturn(false);
 
-        Account savedAccount = new Account(1L, documentNumber);
+        Account savedAccount = new Account(1L, documentNumber, BigDecimal.ZERO);
         when(accountRepository.save(any(Account.class)))
                 .thenReturn(savedAccount);
 
@@ -59,7 +61,7 @@ class AccountServiceTest {
     @DisplayName("Should throw exception when document number already exists")
     void shouldThrowException_whenDocumentNumberAlreadyExists() {
         String documentNumber = "12345678900";
-        CreateAccountCommand command = new CreateAccountCommand(documentNumber);
+        CreateAccountCommand command = new CreateAccountCommand(documentNumber, BigDecimal.ZERO);
 
         when(accountRepository.existsByDocumentNumber(documentNumber))
                 .thenReturn(true);
@@ -79,10 +81,32 @@ class AccountServiceTest {
     }
 
     @Test
+    @DisplayName("Should throw exception when credit limit is negative")
+    void shouldThrowException_whenDocumentNumberIsNegative() {
+        String documentNumber = "12345678900";
+        CreateAccountCommand command = new CreateAccountCommand(documentNumber, new BigDecimal("-10.00"));
+
+        when(accountRepository.existsByDocumentNumber(documentNumber))
+                .thenReturn(true);
+
+        InvalidAmountException exception = assertThrows(
+                InvalidAmountException.class,
+                () -> accountService.createAccount(command)
+        );
+
+        assertEquals(
+                "Available credit limit cannot be negative",
+                exception.getMessage()
+        );
+
+        verify(accountRepository, never()).save(any(Account.class));
+    }
+
+    @Test
     @DisplayName("Should return account when account exists")
     void shouldReturnAccount_whenAccountExists() {
         long accountId = 1L;
-        Account account = new Account(accountId, "12345678900");
+        Account account = new Account(accountId, "12345678900", BigDecimal.ZERO);
 
         when(accountRepository.findById(accountId))
                 .thenReturn(Optional.of(account));
@@ -129,10 +153,10 @@ class AccountServiceTest {
             "12345678900,         12345678900",
     })
     void shouldNormalizeDocumentNumber_whenCreatingAccount(String input, String normalized) {
-        CreateAccountCommand command = new CreateAccountCommand(input);
+        CreateAccountCommand command = new CreateAccountCommand(input, BigDecimal.ZERO);
 
         when(accountRepository.existsByDocumentNumber(normalized.trim())).thenReturn(false);
-        when(accountRepository.save(any(Account.class))).thenReturn(new Account(1L, normalized.trim()));
+        when(accountRepository.save(any(Account.class))).thenReturn(new Account(1L, normalized.trim(), BigDecimal.ZERO));
 
         Account result = accountService.createAccount(command);
 
@@ -157,7 +181,7 @@ class AccountServiceTest {
             "012.345.678/0001-90, 012345678000190",
     })
     void shouldThrowDuplicate_whenNormalizedDocumentAlreadyExists(String input, String normalized) {
-        CreateAccountCommand command = new CreateAccountCommand(input);
+        CreateAccountCommand command = new CreateAccountCommand(input, BigDecimal.ZERO);
 
         when(accountRepository.existsByDocumentNumber(normalized.trim())).thenReturn(true);
 

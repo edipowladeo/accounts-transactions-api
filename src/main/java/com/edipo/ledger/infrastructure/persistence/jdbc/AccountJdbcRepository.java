@@ -22,12 +22,13 @@ public class AccountJdbcRepository implements AccountRepository {
     @Override
     public Account save(Account account) {
         String sql = """
-                INSERT INTO accounts (document_number)
-                VALUES (:documentNumber)
-                """;
+            INSERT INTO accounts (document_number, available_credit_limit)
+            VALUES (:documentNumber, :availableCreditLimit)
+            """;
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-                .addValue("documentNumber", account.documentNumber());
+                .addValue("documentNumber", account.documentNumber())
+                .addValue("availableCreditLimit", account.availableCreditLimit());
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -37,13 +38,34 @@ public class AccountJdbcRepository implements AccountRepository {
                 .map(Number::longValue)
                 .orElseThrow(() -> new IllegalStateException("Failed to retrieve generated account ID"));
 
-        return new Account(generatedId, account.documentNumber());
+        return new Account(generatedId, account.documentNumber(), account.availableCreditLimit());
     }
+
+    @Override
+    public Account update(Account account) {
+        String sql = """
+        UPDATE accounts
+        SET document_number = :documentNumber,
+            available_credit_limit = :availableCreditLimit
+        WHERE account_id = :id
+        """;
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("id", account.id())
+                .addValue("documentNumber", account.documentNumber())
+                .addValue("availableCreditLimit", account.availableCreditLimit());
+
+        jdbcTemplate.update(sql, params);
+
+        return account;
+    }
+
+
 
     @Override
     public Optional<Account> findById(Long id) {
         String sql = """
-                SELECT account_id, document_number
+                SELECT account_id, document_number, available_credit_limit
                 FROM accounts
                 WHERE account_id = :accountId
                 """;
@@ -53,7 +75,8 @@ public class AccountJdbcRepository implements AccountRepository {
                 new MapSqlParameterSource("accountId", id),
                 (rs, rowNum) -> new Account(
                         rs.getLong("account_id"),
-                        rs.getString("document_number")
+                        rs.getString("document_number"),
+                        rs.getBigDecimal("available_credit_limit")
                 )
         );
 

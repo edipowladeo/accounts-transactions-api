@@ -1,5 +1,6 @@
 package com.edipo.ledger.application;
 
+import com.edipo.ledger.domain.model.Account;
 import com.edipo.ledger.domain.repository.AccountRepository;
 import com.edipo.ledger.domain.exception.AccountNotFoundException;
 import com.edipo.ledger.domain.exception.InvalidAmountException;
@@ -30,12 +31,21 @@ public class TransactionService {
     public Transaction create(CreateTransactionCommand command) {
         validateCommand(command);
 
-        if (accountRepository.findById(command.accountId()).isEmpty()) {
-            throw new AccountNotFoundException(command.accountId());
-        }
+        Account account = accountRepository.findById(command.accountId())
+                .orElseThrow(() -> new AccountNotFoundException(command.accountId()));
 
         OperationType operationType = OperationType.fromId(command.operationTypeId());
         BigDecimal normalizedAmount = normalizeAmount(command.amount(), operationType);
+
+        Account newAccount = new Account(
+                account.id(),
+                account.documentNumber(),
+                account.availableCreditLimit().add(normalizedAmount)
+        );
+
+        if (newAccount.availableCreditLimit().compareTo(BigDecimal.ZERO) < 0) {
+            throw new InvalidAmountException("Available credit limit cannot be negative");
+        }
 
         Transaction transaction = new Transaction(
                 null,
@@ -45,6 +55,7 @@ public class TransactionService {
                 OffsetDateTime.now()
         );
 
+        accountRepository.update(newAccount);
         return transactionRepository.save(transaction);
     }
 

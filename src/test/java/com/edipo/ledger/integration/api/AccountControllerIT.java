@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
+import java.math.BigDecimal;
+
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -41,7 +43,7 @@ class AccountControllerIT {
             }
             """;
 
-        Account createdAccount = new Account(1L, "12345678900");
+        Account createdAccount = new Account(1L, "12345678900", BigDecimal.ZERO);
 
         when(accountService.createAccount(argThat(command ->
                 "12345678900".equals(command.documentNumber())
@@ -119,7 +121,7 @@ class AccountControllerIT {
     @Test
     @DisplayName("should return account when account exists")
     void shouldReturnAccountWhenAccountExists() throws Exception {
-        Account account = new Account(1L, "12345678900");
+        Account account = new Account(1L, "12345678900", BigDecimal.ZERO);
 
         when(accountService.getById(1L)).thenReturn(account);
 

@@ -22,6 +22,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @Tag(name = "Accounts", description = "Operations for managing accounts")
 @RestController
 @RequestMapping("/accounts")
@@ -92,7 +94,10 @@ public class AccountController {
             )
             @Valid @org.springframework.web.bind.annotation.RequestBody CreateAccountRequest request
     ) {
-        var command = new CreateAccountCommand(request.getDocumentNumber());
+        var command = new CreateAccountCommand(
+                request.getDocumentNumber(),
+                request.getAvailableCreditLimit()
+        );
         Account account = accountService.createAccount(command);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(AccountResponse.from(account));

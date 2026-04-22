@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,7 +34,7 @@ class AccountJdbcRepositoryIT {
     @Test
     @DisplayName("should save account and return it with generated id")
     void shouldSaveAccountAndReturnItWithGeneratedId() {
-        Account account = new Account(null, "12345678900");
+        Account account = new Account(null, "12345678900", BigDecimal.ZERO);
 
         Account saved = accountJdbcRepository.save(account);
 

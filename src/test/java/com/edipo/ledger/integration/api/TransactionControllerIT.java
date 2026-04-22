@@ -1,5 +1,6 @@
 package com.edipo.ledger.integration.api;
 
+import com.edipo.ledger.SecurityConfig;
 import com.edipo.ledger.api.controller.TransactionController;
 import com.edipo.ledger.application.CreateTransactionCommand;
 import com.edipo.ledger.application.TransactionService;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,6 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TransactionController.class)
+@Import(SecurityConfig.class)
 class TransactionControllerIT {
 
     @Autowired

@@ -152,4 +152,49 @@ class LedgerE2ETest {
         assertEquals(0, new BigDecimal("-100.00").compareTo(persistedAmount));
         assertNotNull(persistedEventDate);
     }
+
+    @Test
+    @DisplayName("should return aggregated balance end to end")
+    void shouldReturnAggregatedBalanceEndToEnd() throws Exception {
+        jdbcTemplate.update(
+                "INSERT INTO accounts (account_id, document_number) VALUES (?, ?)",
+                300L,
+                "77777777700"
+        );
+
+        jdbcTemplate.update(
+                "INSERT INTO transactions (account_id, operation_type_id, amount, event_date) VALUES (?, ?, ?, CURRENT_TIMESTAMP)",
+                300L,
+                1,
+                new BigDecimal("-100.00")
+        );
+        jdbcTemplate.update(
+                "INSERT INTO transactions (account_id, operation_type_id, amount, event_date) VALUES (?, ?, ?, CURRENT_TIMESTAMP)",
+                300L,
+                4,
+                new BigDecimal("40.25")
+        );
+
+        mockMvc.perform(get("/balance?accountId=300"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.account_id").value(300))
+                .andExpect(jsonPath("$.balance").value(-59.75));
+    }
+
+    @Test
+    @DisplayName("should return zero balance for account with no transactions end to end")
+    void shouldReturnZeroBalanceForAccountWithNoTransactionsEndToEnd() throws Exception {
+        jdbcTemplate.update(
+                "INSERT INTO accounts (account_id, document_number) VALUES (?, ?)",
+                301L,
+                "66666666600"
+        );
+
+        mockMvc.perform(get("/balance?accountId=301"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.account_id").value(301))
+                .andExpect(jsonPath("$.balance").value(0));
+    }
 }

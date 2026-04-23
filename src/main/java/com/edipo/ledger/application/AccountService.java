@@ -5,6 +5,7 @@ import com.edipo.ledger.domain.model.Account;
 import com.edipo.ledger.domain.exception.AccountNotFoundException;
 import com.edipo.ledger.domain.repository.AccountRepository;
 import com.edipo.ledger.domain.exception.DuplicateDocumentException;
+import com.edipo.ledger.domain.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,9 +15,14 @@ import java.math.BigDecimal;
 public class AccountService {
 
     private final AccountRepository accountRepository;
+    private final TransactionRepository transactionRepository;
 
-    public AccountService(AccountRepository accountRepository) {
+    public AccountService(
+            AccountRepository accountRepository,
+            TransactionRepository transactionRepository
+    ) {
         this.accountRepository = accountRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     @Transactional
@@ -43,6 +49,12 @@ public class AccountService {
 
         return accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException(accountId));
+    }
+
+    @Transactional(readOnly = true)
+    public BigDecimal getBalance(Long accountId) {
+        getById(accountId);
+        return transactionRepository.getBalanceByAccountId(accountId);
     }
 
     private String normalizeDocument(String documentNumber) {
